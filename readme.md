@@ -1,6 +1,6 @@
 # Apartment Facility Booking
 
-Make sure PHP and composer are installed
+Make sure PHP 7.0 and composer are installed
 
 Run `composer install` to configure autoload and get PHPUnit 
 
