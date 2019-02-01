@@ -18,7 +18,7 @@
     ],
     "files": [
       "app/Config/booking.php",
-      "Helpers/common.php"
+      "app/Helpers/common.php"
     ]
   },
   "minimum-stability": "stable",
