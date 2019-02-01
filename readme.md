@@ -2,6 +2,8 @@
 
 Make sure PHP and composer are installed
 
+Run `composer install` to configure autoload and get PHPUnit 
+
 ## Usage
 
 From the root of the project run these commands to make a booking.
