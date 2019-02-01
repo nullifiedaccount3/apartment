@@ -16,7 +16,7 @@ class BookingController
      * @param $booking_request
      * @param string $data_directory
      */
-    function __construct($booking_request, $data_directory)
+    function __construct($booking_request, $data_directory = null)
     {
         if ($data_directory == null) {
             $this->data_directory = 'data';
