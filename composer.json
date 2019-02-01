@@ -1,0 +1,27 @@
+{
+  "name": "bhargav/adda",
+  "description": "Apartment Facility Booking",
+  "type": "project",
+  "require-dev": {
+    "phpunit/phpunit": "^7.5"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Bhargav Nanekalva",
+      "email": "bhargav3@gmail.com"
+    }
+  ],
+  "autoload": {
+    "classmap": [
+      "app/"
+    ],
+    "files": [
+      "app/Config/booking.php",
+      "Helpers/common.php"
+    ]
+  },
+  "minimum-stability": "stable",
+  "require": {
+  }
+}

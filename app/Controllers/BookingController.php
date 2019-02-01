@@ -1,23 +1,35 @@
 <?php
 
 namespace App\Controllers;
-include_once 'app/Exceptions/BookingException.php';
+
 
 class BookingController
 {
 
     private $booking_request;
+    private $data_directory;
 
     private $config;
 
     /**
      * BookingController constructor.
      * @param $booking_request
+     * @param string $data_directory
      */
-    function __construct($booking_request)
+    function __construct($booking_request, $data_directory)
     {
+        if ($data_directory == null) {
+            $this->data_directory = 'data';
+        } else {
+            $this->data_directory = $data_directory;
+        }
+
+        if (!file_exists($this->data_directory)) {
+            mkdir($this->data_directory);
+        }
+
         $this->booking_request = array_map('trim', explode(',', $booking_request));;
-        $this->config = include 'app/Config/booking.php';
+        $this->config = config();
     }
 
     /**
@@ -40,7 +52,7 @@ class BookingController
             $no_slot = true;
             $slot_costs = $this->config['Facilities'][$facility]['cost']['hourly'];
             foreach ($slot_costs as $slot_cost) {
-                if ($from >= $slot_cost['from'] && $to >= $slot_cost['to']) {
+                if ($from >= $slot_cost['from'] && $to <= $slot_cost['to']) {
                     $no_slot = false;
                     $cost = ($to - $from) * $slot_cost['price'];
                     break;
@@ -52,21 +64,21 @@ class BookingController
                 throw new \BookingException('No slots are available');
             }
             $booking_confirmation = $facility . '*' . $from . '*' . $to . '*' . $cost;
-            if (file_exists('data/' . $date)) {
-                $all_bookings = explode(PHP_EOL, file_get_contents('data/' . $date));
+            if (file_exists($this->data_directory . '/' . $date)) {
+                $all_bookings = explode(PHP_EOL, file_get_contents($this->data_directory . '/' . $date));
 
                 foreach ($all_bookings as $booking) {
-                    $booking = explode('*', $booking);
+                    $booking = array_map('trim', explode('*', $booking));
                     if (count($booking) !== 4) {
                         continue;
                     }
                     //overlaps if x.End > y.Start AND y.End > x.Start
-                    if ($to > (int)$booking[1] && (int)$booking[2] > $from) {
+                    if ($to > (int)$booking[1] && (int)$booking[2] > $from && $facility == $booking[0]) {
                         return 'Booking Failed, Already Booked';
                     }
                 }
             }
-            file_put_contents('data/' . $date, $booking_confirmation . PHP_EOL, FILE_APPEND);
+            file_put_contents($this->data_directory . '/' . $date, $booking_confirmation . PHP_EOL, FILE_APPEND);
             return 'Booked, Rs. ' . $cost;
         } else {
             return $is_valid;
