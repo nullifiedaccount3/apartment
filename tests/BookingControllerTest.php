@@ -77,4 +77,3 @@ final class BookingControllerTest extends TestCase
         (new \App\Controllers\BookingController($this->failureBooking3, $this->data_directory))->book();
     }
 }
-
