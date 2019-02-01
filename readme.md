@@ -1,6 +1,6 @@
 # Apartment Facility Booking
 
-Make sure PHP is installed
+Make sure PHP and composer are installed
 
 ## Usage
 
