@@ -108,7 +108,7 @@ class BookingController
 
         if ((count($date_string_array) !== 3) ||
             !checkdate($date_string_array[1], $date_string_array[2], $date_string_array[0])) {
-            throw new BookingException('Date must be valid and use the format 2012-10-26');
+            throw new BookingException('Date must be valid and use the format yyyy-mm-dd');
         }
 
         $from = is_numeric($from) ? intval($from) : $from;
