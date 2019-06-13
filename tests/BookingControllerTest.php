@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Controllers\BookingController;
 use PHPUnit\Framework\TestCase;
 
 final class BookingControllerTest extends TestCase
@@ -58,22 +59,40 @@ final class BookingControllerTest extends TestCase
         rmdir($this->data_directory);
     }
 
-    public function testBookings()
+    public function testSuccessBookings()
     {
-        //Successful booking slots
-        $booking1 = (new \App\Controllers\BookingController($this->successBooking1, $this->data_directory))->book();
-        $this->assertEquals('Booked, Rs. 3000', $booking1);
-        $booking2 = (new \App\Controllers\BookingController($this->successBooking2, $this->data_directory))->book();
-        $this->assertEquals('Booked, Rs. 500', $booking2);
+        try {
+            //Successful bookings
+            $booking1 = (new BookingController($this->successBooking1, $this->data_directory))->book();
+            $this->assertEquals('Booked, Rs. 3000', $booking1);
+            $booking2 = (new BookingController($this->successBooking2, $this->data_directory))->book();
+            $this->assertEquals('Booked, Rs. 500', $booking2);
+        } catch (BookingException $bookingException) {
+            return $bookingException;
+        }
+    }
 
-        //Testing already booked slots
-        $booking3 = (new \App\Controllers\BookingController($this->failureBooking1, $this->data_directory))->book();
-        $this->assertEquals('Booking Failed, Already Booked', $booking3);
-        $booking4 = (new \App\Controllers\BookingController($this->failureBooking2, $this->data_directory))->book();
-        $this->assertEquals('Booking Failed, Already Booked', $booking4);
+    public function testFailureBookings()
+    {
+        try {
+            //Blocking slots
+            (new BookingController($this->successBooking1, $this->data_directory))->book();
+            (new BookingController($this->successBooking2, $this->data_directory))->book();
 
+            //Testing already booked slots
+            $booking3 = (new BookingController($this->failureBooking1, $this->data_directory))->book();
+            $this->assertEquals('Booking Failed, Already Booked', $booking3);
+            $booking4 = (new BookingController($this->failureBooking2, $this->data_directory))->book();
+            $this->assertEquals('Booking Failed, Already Booked', $booking4);
+        } catch (BookingException $bookingException) {
+            return $bookingException;
+        }
+    }
+
+    public function testBookingException()
+    {
         //Testing exception
         $this->expectException(BookingException::class);
-        (new \App\Controllers\BookingController($this->failureBooking3, $this->data_directory))->book();
+        (new BookingController($this->failureBooking3, $this->data_directory))->book();
     }
 }

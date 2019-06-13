@@ -13,4 +13,4 @@ From the root of the project run these commands to make a booking.
 
 ## Testing
 
-`phpunit --bootstrap vendor/autoload.php tests/BookingControllerTest.php`
+`composer test`

@@ -2,6 +2,9 @@
 
 namespace App\Controllers;
 
+use BookingException;
+use DateTime;
+use Exception;
 
 class BookingController
 {
@@ -34,7 +37,7 @@ class BookingController
 
     /**
      * @return bool|string
-     * @throws \BookingException
+     * @throws BookingException
      */
     function book()
     {
@@ -61,7 +64,7 @@ class BookingController
                 }
             }
             if ($no_slot) {
-                throw new \BookingException('No slots are available');
+                throw new BookingException('No slots are available');
             }
             $booking_confirmation = $facility . '*' . $from . '*' . $to . '*' . $cost;
             if (file_exists($this->data_directory . '/' . $date)) {
@@ -87,7 +90,7 @@ class BookingController
 
     /**
      * @return bool
-     * @throws \BookingException
+     * @throws BookingException
      */
     private function validate()
     {
@@ -97,7 +100,7 @@ class BookingController
         $to = str_replace(':', '.', $this->booking_request[3]);
 
         if (!array_key_exists($facility, $this->config['Facilities'])) {
-            throw new \BookingException('Please choose from available facilities. Available facilities are: ' .
+            throw new BookingException('Please choose from available facilities. Available facilities are: ' .
                 implode(', ', array_keys($this->config['Facilities'])));
         };
 
@@ -105,21 +108,21 @@ class BookingController
 
         if ((count($date_string_array) !== 3) ||
             !checkdate($date_string_array[1], $date_string_array[2], $date_string_array[0])) {
-            throw new \BookingException('Date must be valid and use the format 2012-10-26');
+            throw new BookingException('Date must be valid and use the format 2012-10-26');
         }
 
         $from = is_numeric($from) ? intval($from) : $from;
         $to = is_numeric($to) ? intval($to) : $to;
         if (!is_int($from) || !is_int($to) || ($from > $to)) {
-            throw new \BookingException('From and To times must be valid and From must be smaller than To');
+            throw new BookingException('From and To times must be valid and From must be smaller than To');
         }
 
         try {
-            if ((new \DateTime($date)) < (new \DateTime())) {
-                throw new \BookingException('Booking date cannot be in the past');
+            if ((new DateTime($date)) < (new DateTime())) {
+                throw new BookingException('Booking date cannot be in the past');
             }
-        } catch (\Exception $exception) {
-            throw new \BookingException('Booking date cannot be in the past');
+        } catch (Exception $exception) {
+            throw new BookingException('Booking date cannot be in the past');
         }
 
         return true;

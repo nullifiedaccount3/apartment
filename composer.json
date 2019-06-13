@@ -21,6 +21,9 @@
       "app/Helpers/common.php"
     ]
   },
+  "scripts": {
+    "test": "vendor/bin/phpunit --bootstrap vendor/autoload.php tests/BookingControllerTest.php"
+  },
   "minimum-stability": "stable",
   "require": {
   }
